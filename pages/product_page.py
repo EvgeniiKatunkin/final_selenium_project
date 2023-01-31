@@ -5,7 +5,7 @@ from selenium.common.exceptions import NoAlertPresentException
 
 
 class ProductPage(BasePage):
-    def add_book_to_corp(self):
+    def add_book_to_basket(self):
         button = self.browser.find_element(*ProductPageLocators.ADD_TO_BASKET_BUTTON)
         button.click()
 
@@ -24,10 +24,17 @@ class ProductPage(BasePage):
             print("No second alert presented")
 
     def is_product_added_successfully(self):
-        assert self.is_element_present(*ProductPageLocators.MESSAGES), "There are no messages on the page"
         assert self.browser.find_element(*ProductPageLocators.ADD_PRODUCT_MESSAGE).text == self.browser.find_element(
             *ProductPageLocators.PRODUCT_NAME).text, "Incorrect title of product is added in your basket"
         assert self.is_element_present(
             *ProductPageLocators.ADD_PRODUCT_BASKET_PRICE), "Basket message is not available."
         assert self.browser.find_element(*ProductPageLocators.BASKET_MESSAGE).text == self.browser.find_element(
             *ProductPageLocators.PRODUCT_PRICE).text, "The price of the product or the basket is incorrect."
+
+    def should_not_be_success_message(self):
+        assert self.is_not_element_present(
+            *ProductPageLocators.ADD_PRODUCT_MESSAGE), "Success messages is presented, but should not be"
+
+    def should_success_message_disappears(self):
+        assert self.is_disappeared(
+            *ProductPageLocators.ADD_PRODUCT_MESSAGE), "Success messages should disappears, but it is not"
